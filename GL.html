@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/cloudfile-ebad3.appspot.com/o/uploads%2F320x480-circle-clipart-chain-link-9.png?alt=media&token=c3ab8bc6-ae59-4896-9aa1-414bc51de1f5" type="image/icon">
+    <title>Get Links</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <style>   
+        body {
+            margin: 0;
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: 1vw;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        @media(min-width: 600px) {
+            header {
+            display: flex;
+            background-color: rgb(255, 255, 120);
+            box-shadow: 0 0 1vw rgba(0,0,0,0.5);   
+        }
+
+        #logo {
+            height: 2.5vw;
+            width: 2.5vw;
+        }
+
+        #title {
+            font-size: 2.8vw;
+            font-weight: bold; 
+            display: flex;
+            align-items: center;
+            margin-left: 4vw;
+        }
+
+        main {
+            margin: 3vw 8vw;
+            flex: 1 1 auto;
+        }
+
+        .steps {
+            margin: 3vw;
+            font-size: 2vw;
+            padding: 2vw;
+            border: 0.2vw solid black;
+            border-radius: 1vw;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #add-button:hover,
+        #remove-button:hover,
+        #upload-button:hover {
+            color: rgb(212, 212, 212);
+        }
+
+        #add-button:active,
+        #remove-button:active,
+        #upload-button:active  {
+            background-color: rgb(50, 50, 50);
+            transform: scale(0.95);
+            box-shadow: 0 0 1vw rgba(0,0,0,0.0);
+        }
+
+        #add-button, #remove-button, #upload-button {
+            border: 1px solid transparent;
+            border-radius: 1.2vw;
+            padding: 0.6vw;
+            font-size: 1.6vw;
+            color: white;
+            margin-right: 3vw;
+            background-color: black;
+            box-shadow: 0 0 1vw rgba(0,0,0,0.5);   
+        }
+
+        #upload-button {
+            margin-left: 4vw; 
+        }
+
+        #selected-files-heading, #links-heading {
+            margin-left: 2vw;
+        }
+
+        .selected-files-container, .links-container {
+            width: 100%;
+            min-height: 10vw;
+            background-color: whitesmoke;
+            border: 1px solid transparent;
+            border-radius: 0.6vw;
+            padding-left: 2vw;
+            padding-top: 2vw;
+            font-size: 1.2vw;
+        }
+
+        .selected-files-status, .links-status {
+            color: rgba(0, 0, 0, 0.466);
+        }
+
+        #progress-message {
+            position: fixed;
+            display: none;
+            font-size: 4vw;
+            text-shadow: 0 0 1vw rgba(0,0,0,0.5);
+            color: rgb(255, 255, 120);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: blink 1.4s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .links-container p {
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+        }
+
+        footer {
+            font-size: 1.3vw;
+            background-color: rgb(250, 250, 120);
+            box-shadow: 0 0 1vw rgba(0,0,0,0.5);
+            display: grid;
+            padding-top: 1vw;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-around;   
+            align-items: center;
+        }
+
+        #copyrights-line {
+            font-size: 0.8vw;
+            margin-top: 3vw;
+        }
+    }
+
+    @media(max-width:599px) {
+        header {
+            display: flex;
+            background-color: rgb(255, 255, 120);
+            box-shadow: 0 0 1vw rgba(0,0,0,0.5);   
+        }
+
+        #logo {
+            height: 8vw;
+            width: 8vw;
+        }
+
+        #title {
+            font-size: 8.2vw;
+            font-weight: bold; 
+            display: flex;
+            align-items: center;
+            margin-left: 4vw;
+        }
+
+        main {
+            margin: 3vw 8vw;
+            flex: 1 1 auto;
+        }
+
+        .steps {
+            margin: 3vw;
+            font-size: 5vw;
+            padding: 2vw;
+            border: 0.2vw solid black;
+            border-radius: 1vw;
+        }
+
+        .buttons {
+            margin-top: 4vw;
+            display: flex;
+            justify-content: center;
+        }
+
+        #add-button:hover,
+        #remove-button:hover,
+        #upload-button:hover {
+            color: rgb(212, 212, 212);
+        }
+
+        #add-button:active,
+        #remove-button:active,
+        #upload-button:active  {
+            background-color: rgb(50, 50, 50);
+            transform: scale(0.95);
+            box-shadow: 0 0 1vw rgba(0,0,0,0.0);
+        }
+
+        #add-button, #remove-button, #upload-button {
+            border: 1px solid transparent;
+            border-radius: 2.4vw;
+            padding: 1.4vw;
+            font-size: 4vw;
+            color: white;
+            margin-right: 3vw;
+            background-color: black;
+            box-shadow: 0 0 1vw rgba(0,0,0,0.5);   
+        }
+
+        #upload-button {
+            margin-left: 4vw; 
+        }
+
+        #selected-files-heading, #links-heading {
+            margin-left: 2vw;
+            font-size: 4.1vw;
+            margin-top: 8vw;
+        }
+
+        .selected-files-container, .links-container {
+            width: 100%;
+            min-height: 30vw;
+            background-color: whitesmoke;
+            border: 1px solid transparent;
+            border-radius: 1.2vw;
+            padding-left: 2vw;
+            padding-top: 2vw;
+            font-size: 4vw;
+        }
+
+        .selected-files-status, .links-status {
+            color: rgba(0, 0, 0, 0.466);
+        }
+
+        #progress-message {
+            position: fixed;
+            display: none;
+            font-size: 8vw;
+            text-shadow: 0 0 1vw rgba(0,0,0,0.5);
+            color: rgb(255, 255, 120);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: blink 2.4s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .links-container p {
+            display: flex;
+            align-items: center;
+            gap: 1.4vw;
+        }
+
+        footer {
+            font-size: 3.5vw;
+            background-color: rgb(250, 250, 120);
+            box-shadow: 0 0 1vw rgba(0,0,0,0.5);
+            display: grid;
+            padding-top: 1vw;
+            margin-top: 4vw;
+        }
+
+        .footer-top {
+            display: grid;
+            justify-content: space-around;   
+            align-items: center;
+        }
+
+        #copyrights-line {
+            font-size: 2vw;
+            margin-top: 6vw;
+        }
+    }
+        
+    </style>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getStorage, ref, uploadBytes, listAll, getMetadata, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+      
+        function _0x42e8(_0xfcfbf2,_0x2cecc6){const _0x3811a7=_0x3811();return _0x42e8=function(_0x42e89e,_0x181e9d){_0x42e89e=_0x42e89e-0x17a;let _0x59bcbd=_0x3811a7[_0x42e89e];return _0x59bcbd;},_0x42e8(_0xfcfbf2,_0x2cecc6);}function _0x3811(){const _0x1eef9a=['6SLHwfB','77403uMHPag','123302Paxyol','32zUTMBi','179862CdxwhX','673470CivWoe','1616264uJMuss','G-YED1JTYKSL','309410ZhqIBh','814529576774','9zGfurG','1668590JOPxMc','cloudfile-ebad3','cloudfile-ebad3.firebaseapp.com','cloudfile-ebad3.appspot.com'];_0x3811=function(){return _0x1eef9a;};return _0x3811();}const _0x16acc2=_0x42e8;(function(_0x4dbea9,_0x5b46ce){const _0x2ec323=_0x42e8,_0x3a7f53=_0x4dbea9();while(!![]){try{const _0x54dcd3=-parseInt(_0x2ec323(0x17b))/0x1+parseInt(_0x2ec323(0x188))/0x2+-parseInt(_0x2ec323(0x187))/0x3*(-parseInt(_0x2ec323(0x17a))/0x4)+-parseInt(_0x2ec323(0x17c))/0x5*(-parseInt(_0x2ec323(0x186))/0x6)+-parseInt(_0x2ec323(0x182))/0x7+parseInt(_0x2ec323(0x17d))/0x8+parseInt(_0x2ec323(0x181))/0x9*(-parseInt(_0x2ec323(0x17f))/0xa);if(_0x54dcd3===_0x5b46ce)break;else _0x3a7f53['push'](_0x3a7f53['shift']());}catch(_0x1f0e6){_0x3a7f53['push'](_0x3a7f53['shift']());}}}(_0x3811,0x25fdd));const firebaseConfig={'apiKey':'AIzaSyAD-V3XgxtAVBMS4OU0LIP5yfTOZJMZjhE','authDomain':_0x16acc2(0x184),'projectId':_0x16acc2(0x183),'storageBucket':_0x16acc2(0x185),'messagingSenderId':_0x16acc2(0x180),'appId':'1:814529576774:web:a1fffe8392baf522f6ef47','measurementId':_0x16acc2(0x17e)};
+      
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+      
+        async function checkStorageLimit() {
+          const storageRef = ref(storage);
+          const allFiles = await listAll(storageRef);
+          let totalSize = 0;
+      
+          for (const itemRef of allFiles.items) {
+            const metadata = await getMetadata(itemRef);
+            totalSize += metadata.size;
+          }
+      
+          const totalSizeGB = totalSize / (1024 * 1024 * 1024);
+          return totalSizeGB < 4;
+        }
+      
+        async function uploadFiles() {
+          const fileInput = document.getElementById('fileInput');
+          const files = fileInput.files;
+          const progressMessage = document.getElementById('progress-message');
+          const linksContainer = document.querySelector('.links-container');
+          const linksStatus = document.querySelector('.links-status');
+      
+          if (files.length === 0) {
+            alert('No files selected.');
+            return;
+          }
+      
+          const canUpload = await checkStorageLimit();
+      
+          if (!canUpload) {
+            progressMessage.textContent = 'Storage full, cannot upload files';
+            return;
+          }
+      
+          progressMessage.textContent = 'Uploading...please wait';
+          progressMessage.style.display = 'block';
+      
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const storageRef = ref(storage, 'uploads/' + file.name);
+      
+            try {
+              await uploadBytes(storageRef, file);
+              const downloadURL = await getDownloadURL(storageRef);
+      
+              // Create link element
+              const linkElement = document.createElement('p');
+              linkElement.innerHTML = `<a href="${downloadURL}" target="_blank">${file.name}</a>`;
+      
+              // Create copy button
+              const copyButton = document.createElement('button');
+              copyButton.textContent = 'Copy Link';
+              copyButton.style.cssText = `
+                border: 1px solid transparent;
+                border-radius: 0.8vw;
+                color: white;
+                font-size: 1.2vw;
+                background-color: black;
+                box-shadow: 0 0 1vw rgba(0,0,0,0.5);
+             `;
+
+             // Function to apply media query styles
+             function applyMediaQueryStyles() {
+                if (window.matchMedia('(max-width: 599px)').matches) {
+                    copyButton.style.fontSize = '4vw';
+                } else if (window.matchMedia('(min-width: 600px)').matches) {
+                    copyButton.style.fontSize = '1.2vw';
+                }
+              }
+
+             // Apply styles on load
+             applyMediaQueryStyles();
+
+            // Apply styles on window resize
+            window.addEventListener('resize', applyMediaQueryStyles);
+
+            copyButton.addEventListener('mouseover', () => {
+            copyButton.style.color = 'rgb(212, 212, 212)';
+            });
+            copyButton.addEventListener('mouseout', () => {
+            copyButton.style.color = 'white';
+            });
+            copyButton.addEventListener('mousedown', () => {
+            copyButton.style.backgroundColor = 'rgb(50, 50, 50)';
+            copyButton.style.transform = 'scale(0.95)';
+            copyButton.style.boxShadow = '0 0 1vw rgba(0,0,0,0.0)';
+            });
+            copyButton.addEventListener('mouseup', () => {
+            copyButton.style.backgroundColor = 'black';
+            copyButton.style.transform = 'scale(1)';
+            copyButton.style.boxShadow = '0 0 1vw rgba(0,0,0,0.5)';
+            });
+            copyButton.addEventListener('click', () => {
+            navigator.clipboard.writeText(downloadURL);
+            alert('Link copied to clipboard');
+            });
+
+            document.body.appendChild(copyButton);
+
+              // Append link and copy button to container
+              linkElement.appendChild(copyButton);
+              linksContainer.appendChild(linkElement);
+            } catch (error) {
+              console.error('Upload failed:', error);
+              progressMessage.textContent = 'Upload failed. Please try again.';
+              return;
+            }
+          }
+      
+          // Hide links status if links are generated
+          if (linksContainer.children.length > 0) {
+            linksStatus.style.display = 'none';
+          } else {
+            linksStatus.style.display = 'block';
+          }
+      
+          // Update progress message after upload
+          progressMessage.textContent = 'Uploaded successfully';
+          setTimeout(() => {
+            progressMessage.style.display = 'none';
+            progressMessage.textContent = 'Uploading...please wait';
+          }, 1000);
+        }
+      
+        // Event listener for the upload button
+        document.getElementById('upload-button').addEventListener('click', uploadFiles);
+      </script>  
+</head>
+<body>
+    <header>
+        <div id="title">
+            <img id='logo' src='https://firebasestorage.googleapis.com/v0/b/cloudfile-ebad3.appspot.com/o/uploads%2F320x480-circle-clipart-chain-link-9.png?alt=media&token=c3ab8bc6-ae59-4896-9aa1-414bc51de1f5'>&nbsp;
+            <p>Get Links</p>
+        </div>
+    </header>
+    <br><br>
+    <main>
+        <section class="steps">
+            <center>
+                <h2>GENERATE LINKS TO YOUR FILES</h2>
+                <p>1.click on 'Add Files' button</p>
+                <p>2.select files from your device</p>
+                <p>3.click on 'Upload' button.</p>
+            </center>
+        </section>
+        <br><br><br>
+        <div class="buttons">
+            <button id="add-button" onclick="addFiles()">Add Files</button>      
+            <button id="remove-button" onclick="removeFiles()">Remove All files</button>
+            <button id="upload-button" onclick="uploadFiles()">Upload</button>        
+        </div>
+        <input type="file" id="fileInput" style="display:none;" multiple /><br>           
+        <section class="selected-files">
+            <h2 id="selected-files-heading">Selected Files: <span id="count">0</span></h2>
+            <div class="selected-files-container">
+                <p class="selected-files-status">No files selected</p>
+            </div>
+        </section>
+        <br><br><br>
+        <section class="links">
+            <h2 id="links-heading">Links</h2>
+            <div class="links-container">
+                <p class="links-status">No links</p>
+            </div>
+        </section>          
+        <h1 id="progress-message">Uploading...please wait</h1>
+    </main> 
+    <br><br>
+    <footer>
+        <section class="footer-top">
+            <article>
+                <h4>Note:</h4>
+                <p>Please do not upload large size files.</p>
+                <P>Uploaded files will be DELETED if space not available.</P>
+            </article>
+            <article>
+                <h3>For any queries mail us</h3>
+                <a style='color: black;'href='mailto:sivasankarkalthireddy1@gmail.com'>getlinks@gmail.com</a>
+            </article>     
+        </section>
+        <center><p id='copyrights-line'>&copy; 2024 Get Links All rights reserved.</p></center>
+    </footer>
+    <script>
+        window.onload = function() {
+            alert("This is a demo version. Uploaded files will be deleted anytime.");
+        };
+
+        // Function to trigger file input click
+        function addFiles() {
+            document.getElementById('fileInput').click();
+        }
+    
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const files = this.files;
+            const container = document.querySelector('.selected-files-container');
+            const statusMessage = document.querySelector('.selected-files-status');
+    
+            if (files.length > 0) {
+                statusMessage.style.display = 'none';
+                const currentCount = parseInt(document.getElementById('count').textContent);
+                for (let i = 0; i < files.length; i++) {
+                    const fileItem = document.createElement('p');
+                    fileItem.textContent = files[i].name;
+                    container.appendChild(fileItem);
+                }
+                document.getElementById('count').textContent = currentCount + files.length;
+            } else {
+                statusMessage.style.display = 'block';
+                document.getElementById('count').textContent = '0';
+            }
+        });
+    
+        function removeFiles() {
+    // Clear file input
+    document.getElementById('fileInput').value = '';
+
+    // Clear selected files container
+    const selectedFilesContainer = document.querySelector('.selected-files-container');
+    selectedFilesContainer.innerHTML = '<p class="selected-files-status">No files selected</p>';
+    document.getElementById('count').textContent = '0';
+
+    // Clear generated links container
+    const generatedLinksContainer = document.querySelector('.links-container');
+    generatedLinksContainer.innerHTML = '<p class="links-status">No links</p>';
+
+    // Event listener for the remove button
+    document.getElementById('remove-button').addEventListener('click', removeFiles);
+    }
+    
+    </script>
+</body>
+</html>
